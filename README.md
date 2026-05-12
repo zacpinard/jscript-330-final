@@ -16,16 +16,17 @@ Your project will require an Express API using:
   Authentication and Authorization: JWTs from jsonwebtoken, there will be a 'role' field on runner to determine if they are regular participant or an admin
   2 sets of CRUD routes (not counting authentication): Runner and Race
   Indexes for performance and uniqueness when reasonable: Runner.email for runners and race.id for races
-  At least one of text search, aggregations, or lookups:
+  At least one of text search, aggregations, or lookups: I will use a $lookup aggregation joining runners to their their registered races.
 
 
 
 5. A timeline for what project components you plan to complete, week by week, for the remainder of the class. 
 
 5/13-5/20
-
+Foundation: set up package.json, Express server, MongoDB connection, folder structure mirroring week 5 project with items and orders and replacing with races and runners schemas. Building daos/runner.js createRunner, getByEmail, and updatePassword. Building routes/auth.js signup, login, change password from week 5, and testing in Postman  
 
 5/20-5/27
-
+CRUD Routes: Building daos/races.js GET all, GET by ID, POST/PUT.  Writing middleware. Implementing $lookup aggregation as a race roster or runner's race schedule
 
 5/27-6/5
+Finshing Up: Creating initial database with a few races and runners so the API feels live. Error handling. Final Postman checks, preparing presentation.
