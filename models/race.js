@@ -1,8 +1,13 @@
 import mongoose from 'mongoose';
 
-const itemSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  price: { type: Number, required: true },
+const raceSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  park: { type: String, required: true },
+  country: { type: String, required: true },
+  date: { type: Date, required: true },
+  charityOrg: { type: String, required: true },
+  spotsAvailable: { type: Number, required: true },
+  entryFee: { type: Number, required: true },
 });
 
-export default mongoose.model('Item', itemSchema);
+export default mongoose.model('Race', raceSchema);

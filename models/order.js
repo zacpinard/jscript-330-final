@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
 
-const orderSchema = new mongoose.Schema({
-  userId: {
+const registrationSchema = new mongoose.Schema({
+  runnerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Runner',
     required: true,
   },
-  items: {
+  raceId: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item' }],
+    ref: 'Race',
     required: true,
   },
-  total: { type: Number, required: true },
+  registeredAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model('Order', orderSchema);
+export default mongoose.model('Registration', registrationSchema);
