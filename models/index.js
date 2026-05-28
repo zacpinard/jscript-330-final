@@ -1,5 +1,5 @@
 import Item from './runner';
-import Order from './order';
+import Order from './registration';
 import User from './runner';
 
 export default {
