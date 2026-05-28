@@ -1,0 +1,32 @@
+{
+  "env": {
+    "node": true,
+    "es2024": true
+  },
+  "extends": ["airbnb-base", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_|^next$", "ignoreRestSiblings": true }
+    ],
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "no-param-reassign": ["error", { "props": false }]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.js"],
+      "extends": ["plugin:jest/recommended"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "no-shadow": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [".github/**"]
+}
