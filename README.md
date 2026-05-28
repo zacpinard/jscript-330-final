@@ -1,3 +1,8 @@
+Project Update (Proof of Concept)
+I have been using the week 5 assignment as a template for creating this project and replacing items with races and users with runners. I had to learn how to incorporate the architecture of a separate registrations model and dao to relate multiple runners and multiple races.  I have gone through the models and daos, but still need to work on converting the routes.
+
+
+
 1. A description of your project's context/subject matter (i.e. gaming, project management, image processing, etc.).
 
 My project will create an API for runners to sign yp for a series of hypothetical marathon races called "Wild Runs" that raise money for wildlife conservation organizations. I will build the common routes for signup, login, and changing passwords. My API will model a simple website, with races and runners. Normal users should not be able to create or update races, but they will be able to sign up for specific races. I will use simple authorization to give more privileges to race admin users.
