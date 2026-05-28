@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as orderDao from '../daos/order';
-import * as itemDao from '../daos/item';
+import * as orderDao from '../daos/race';
+import * as itemDao from '../daos/runner';
 import { isAuthorized } from '../middleware/token';
 
 const router = Router();

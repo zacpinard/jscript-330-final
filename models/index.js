@@ -1,6 +1,6 @@
-import Item from './item';
+import Item from './runner';
 import Order from './order';
-import User from './user';
+import User from './runner';
 
 export default {
   Item,

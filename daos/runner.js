@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import User from '../models/user';
+import User from '../models/runner';
 
 export const createUser = async ({ email, password }) => {
   const hashed = await bcrypt.hash(password, 10);

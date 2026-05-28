@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import * as itemDao from '../daos/item';
-import { isAuthorized, isAdmin } from '../middleware/token';
+import * as itemDao from '../daos/runner';
+import { isAuthorized, isRaceAdmin } from '../middleware/token';
 
 const router = Router();
 
-router.post('/', isAuthorized, isAdmin, async (req, res, next) => {
+router.post('/', isAuthorized, isRaceAdmin, async (req, res, next) => {
   try {
     const item = await itemDao.createItem(req.body);
     res.json(item);
@@ -13,7 +13,7 @@ router.post('/', isAuthorized, isAdmin, async (req, res, next) => {
   }
 });
 
-router.put('/:id', isAuthorized, isAdmin, async (req, res, next) => {
+router.put('/:id', isAuthorized, isRaceAdmin, async (req, res, next) => {
   try {
     await itemDao.updateItem(req.params.id, req.body);
     res.sendStatus(200);

@@ -1,4 +1,4 @@
-import Item from '../models/item';
+import Item from '../models/race';
 
 export const createItem = async (data) => Item.create(data);
 

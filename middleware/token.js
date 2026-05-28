@@ -17,7 +17,7 @@ export const isAuthorized = (req, res, next) => {
   }
 };
 
-export const isAdmin = (req, res, next) => {
+export const isRaceAdmin = (req, res, next) => {
   if (!req.user?.roles?.includes('admin')) {
     res.sendStatus(403);
     return;
