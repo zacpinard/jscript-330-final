@@ -1,14 +1,14 @@
 import bcrypt from 'bcrypt';
-import User from '../models/runner';
+import Runner from '../models/runner';
 
-export const createUser = async ({ email, password }) => {
+export const createRunner = async ({ email, password }) => {
   const hashed = await bcrypt.hash(password, 10);
-  return User.create({ email, password: hashed, roles: ['user'] });
+  return Runner.create({ email, password: hashed, roles: ['user'] });
 };
 
-export const getByEmail = async (email) => User.findOne({ email }).lean();
+export const getByEmail = async (email) => Runner.findOne({ email }).lean();
 
-export const updatePassword = async (userId, newPassword) => {
+export const updatePassword = async (runnerId, newPassword) => {
   const hashed = await bcrypt.hash(newPassword, 10);
-  return User.updateOne({ _id: userId }, { password: hashed });
+  return Runner.updateOne({ _id: runnerId }, { password: hashed });
 };
