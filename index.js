@@ -4,7 +4,7 @@ import server from './server';
 const port = process.env.PORT || 3000;
 
 mongoose
-  .connect('mongodb://127.0.0.1/jscript-330-week-5', {})
+  .connect('mongodb://127.0.0.1/wild-runs', {})
   .then(() => {
     server.listen(port, () => {
       // eslint-disable-next-line no-console

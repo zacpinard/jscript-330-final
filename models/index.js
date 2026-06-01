@@ -1,9 +1,9 @@
-import Item from './runner';
-import Order from './registration';
-import User from './runner';
+import Runner from './runner';
+import Registration from './registration';
+import Race from './race';
 
 export default {
-  Item,
-  Order,
-  User,
+  Runner,
+  Race,
+  Registration,
 };
