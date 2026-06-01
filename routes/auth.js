@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import * as userDao from '../daos/user';
+import * as runnerDao from '../daos/runner';
 import { isAuthorized } from '../middleware/token';
 
 const router = Router();
@@ -15,7 +15,7 @@ router.post('/signup', async (req, res, next) => {
       return;
     }
     try {
-      await userDao.createUser({ email, password });
+      await runnerDao.createRunner({ email, password });
       res.sendStatus(200);
     } catch (e) {
       if (e.code === 11000) {
@@ -36,7 +36,7 @@ router.post('/login', async (req, res, next) => {
       res.sendStatus(400);
       return;
     }
-    const user = await userDao.getByEmail(email);
+    const user = await runnerDao.getByEmail(email);
     if (!user) {
       res.sendStatus(401);
       return;
@@ -47,7 +47,7 @@ router.post('/login', async (req, res, next) => {
       return;
     }
     const token = jwt.sign(
-      { email: user.email, _id: user._id, roles: user.roles },
+      { email: runner.email, _id: runner._id, roles: runner.roles },
       SECRET,
     );
     res.json({ token });
@@ -63,7 +63,7 @@ router.put('/password', isAuthorized, async (req, res, next) => {
       res.sendStatus(400);
       return;
     }
-    await userDao.updatePassword(req.user._id, password);
+    await runnerDao.updatePassword(req.user._id, password);
     res.sendStatus(200);
   } catch (e) {
     next(e);
