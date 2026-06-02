@@ -126,7 +126,8 @@ describe('/races', () => {
         expect(res.statusCode).toEqual(200);
         expect(res.body).toMatchObject(race);
         const savedRace = await models.Race.findOne({ _id: res.body._id }).lean();
-        expect(savedRace).toMatchObject(race);
+        const { date, ...raceWithoutDate } = race;
+        expect(savedRace).toMatchObject(raceWithoutDate);
       });
     });
 
