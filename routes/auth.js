@@ -9,7 +9,7 @@ const SECRET = process.env.JWT_SECRET || 'secret';
 
 router.post('/signup', async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName, nationality, age } = req.body;
     if (!password) {
       res.sendStatus(400);
       return;
@@ -36,12 +36,12 @@ router.post('/login', async (req, res, next) => {
       res.sendStatus(400);
       return;
     }
-    const user = await runnerDao.getByEmail(email);
-    if (!user) {
+    const runner = await runnerDao.getByEmail(email);
+    if (!runner) {
       res.sendStatus(401);
       return;
     }
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, runner.password);
     if (!match) {
       res.sendStatus(401);
       return;
