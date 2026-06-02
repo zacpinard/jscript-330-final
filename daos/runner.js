@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import Runner from '../models/runner';
 
-export const createRunner = async ({ email, password }) => {
+export const createRunner = async ({ email, password, firstName, lastName, nationality, age }) => {
   const hashed = await bcrypt.hash(password, 10);
   return Runner.create({ email, password: hashed, roles: ['user'], firstName, lastName, nationality, age });
 };
