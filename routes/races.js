@@ -15,7 +15,7 @@ router.post('/', isAuthorized, isRaceAdmin, async (req, res, next) => {
 
 router.put('/:id', isAuthorized, isRaceAdmin, async (req, res, next) => {
   try {
-    await raceDao.updateItem(req.params.id, req.body);
+    await raceDao.updateRace(req.params.id, req.body);
     res.sendStatus(200);
   } catch (e) {
     next(e);
