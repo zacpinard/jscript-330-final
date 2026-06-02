@@ -5,40 +5,57 @@ import * as testUtils from '../testUtils';
 
 import models from '../models';
 
-describe('/items', () => {
+describe('/races', () => {
   beforeAll(testUtils.connectDB);
   afterAll(testUtils.stopDB);
 
   afterEach(testUtils.clearDB);
 
-  const item0 = { title: 'Item One', price: 10 };
-  const item1 = { title: 'Second Item', price: 12.99 };
+  const race0 = {
+    name: 'Yellowstone Wild Run',
+    park: 'Yellowstone National Park',
+    country: 'USA',
+    date: '2026-08-15',
+    charityOrg: 'Yellowstone Forever',
+    spotsAvailable: 500,
+    entryFee: 150,
+  };
+
+  const race1 = {
+    name: 'Serengeti Wild Run',
+    park: 'Serengeti National Park',
+    country: 'Tanzania',
+    date: '2026-09-25',
+    charityOrg: 'Jane Goodall Institute',
+    spotsAvailable: 1000,
+    entryFee: 300,
+  };
 
   describe('Before login', () => {
     describe('POST /', () => {
       it('should send 401 without a token', async () => {
-        const res = await request(server).post('/items').send(item0);
+        const res = await request(server).post('/races').send(race0);
         expect(res.statusCode).toEqual(401);
       });
 
       it('should send 401 with a bad token', async () => {
         const res = await request(server)
-          .post('/items')
+          .post('/races')
           .set('Authorization', 'Bearer BAD')
-          .send(item0);
+          .send(race0);
         expect(res.statusCode).toEqual(401);
       });
     });
 
     describe('GET /', () => {
       it('should send 401 without a token', async () => {
-        const res = await request(server).get('/items').send(item0);
+        const res = await request(server).get('/races').send();
         expect(res.statusCode).toEqual(401);
       });
 
       it('should send 401 with a bad token', async () => {
         const res = await request(server)
-          .get('/items')
+          .get('/races')
           .set('Authorization', 'Bearer BAD')
           .send();
         expect(res.statusCode).toEqual(401);
@@ -47,13 +64,13 @@ describe('/items', () => {
 
     describe('GET /:id', () => {
       it('should send 401 without a token', async () => {
-        const res = await request(server).get('/items/123').send(item0);
+        const res = await request(server).get('/races/123').send();
         expect(res.statusCode).toEqual(401);
       });
 
       it('should send 401 with a bad token', async () => {
         const res = await request(server)
-          .get('/items/456')
+          .get('/races/456')
           .set('Authorization', 'Bearer BAD')
           .send();
         expect(res.statusCode).toEqual(401);
@@ -61,15 +78,20 @@ describe('/items', () => {
     });
   });
 
-  describe('after login', () => {
+  describe('After login', () => {
     const user0 = {
       email: 'user0@mail.com',
       password: '123password',
+      firstName: 'John',
+      lastName: 'Smith',
     };
     const user1 = {
       email: 'user1@mail.com',
       password: '456password',
+      firstName: 'Jane',
+      lastName: 'Doe',
     };
+
     let token0;
     let adminToken;
 
@@ -78,7 +100,7 @@ describe('/items', () => {
       const res0 = await request(server).post('/auth/login').send(user0);
       token0 = res0.body.token;
       await request(server).post('/auth/signup').send(user1);
-      await models.User.updateOne(
+      await models.Runner.updateOne(
         { email: user1.email },
         { $push: { roles: 'admin' } },
       );
@@ -86,123 +108,116 @@ describe('/items', () => {
       adminToken = res1.body.token;
     });
 
-    describe.each([item0, item1])('POST / item %#', (item) => {
-      it('should send 403 to normal user and not store item', async () => {
+    describe.each([race0, race1])('POST / race %#', (race) => {
+      it('should send 403 to normal user and not store race', async () => {
         const res = await request(server)
-          .post('/items')
+          .post('/races')
           .set('Authorization', `Bearer ${token0}`)
-          .send(item);
+          .send(race);
         expect(res.statusCode).toEqual(403);
-        expect(await models.Item.countDocuments()).toEqual(0);
+        expect(await models.Race.countDocuments()).toEqual(0);
       });
 
-      it('should send 200 to admin user and store item', async () => {
+      it('should send 200 to admin user and store race', async () => {
         const res = await request(server)
-          .post('/items')
+          .post('/races')
           .set('Authorization', `Bearer ${adminToken}`)
-          .send(item);
+          .send(race);
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toMatchObject(item);
-        const savedItem = await models.Item.findOne({
-          _id: res.body._id,
-        }).lean();
-        expect(savedItem).toMatchObject(item);
+        expect(res.body).toMatchObject(race);
+        const savedRace = await models.Race.findOne({ _id: res.body._id }).lean();
+        expect(savedRace).toMatchObject(race);
       });
     });
 
-    describe.each([item0, item1])('PUT / item %#', (item) => {
-      let originalItem;
+    describe.each([race0, race1])('PUT /:id race %#', (race) => {
+      let originalRace;
       beforeEach(async () => {
         const res = await request(server)
-          .post('/items')
+          .post('/races')
           .set('Authorization', `Bearer ${adminToken}`)
-          .send(item);
-        originalItem = res.body;
+          .send(race);
+        originalRace = res.body;
       });
 
-      it('should send 403 to normal user and not update item', async () => {
+      it('should send 403 to normal user and not update race', async () => {
         const res = await request(server)
-          .put(`/items/${originalItem._id}`)
+          .put(`/races/${originalRace._id}`)
           .set('Authorization', `Bearer ${token0}`)
-          .send({ ...item, price: item.price + 1 });
+          .send({ ...race, spotsAvailable: race.spotsAvailable + 100 });
         expect(res.statusCode).toEqual(403);
-        const newItem = await models.Item.findById(originalItem._id).lean();
-        newItem._id = newItem._id.toString();
-        expect(newItem).toMatchObject(originalItem);
+        const newRace = await models.Race.findById(originalRace._id).lean();
+        expect(newRace.spotsAvailable).toEqual(race.spotsAvailable);
       });
 
-      it('should send 200 to admin user and update item', async () => {
+      it('should send 200 to admin user and update race', async () => {
         const res = await request(server)
-          .put(`/items/${originalItem._id}`)
+          .put(`/races/${originalRace._id}`)
           .set('Authorization', `Bearer ${adminToken}`)
-          .send({ ...item, price: item.price + 1 });
+          .send({ ...race, spotsAvailable: race.spotsAvailable + 100 });
         expect(res.statusCode).toEqual(200);
-        const newItem = await models.Item.findById(originalItem._id).lean();
-        newItem._id = newItem._id.toString();
-        expect(newItem).toMatchObject({
-          ...originalItem,
-          price: originalItem.price + 1,
-        });
+        const newRace = await models.Race.findById(originalRace._id).lean();
+        expect(newRace.spotsAvailable).toEqual(race.spotsAvailable + 100);
       });
     });
 
-    describe.each([item0, item1])('GET /:id item %#', (item) => {
-      let originalItem;
-
+    describe.each([race0, race1])('GET /:id race %#', (race) => {
+      let originalRace;
       beforeEach(async () => {
         const res = await request(server)
-          .post('/items')
+          .post('/races')
           .set('Authorization', `Bearer ${adminToken}`)
-          .send(item);
-        originalItem = res.body;
+          .send(race);
+        originalRace = res.body;
       });
 
-      it('should send 200 to normal user and return item', async () => {
+      it('should send 200 to normal user and return race', async () => {
         const res = await request(server)
-          .get(`/items/${originalItem._id}`)
+          .get(`/races/${originalRace._id}`)
           .set('Authorization', `Bearer ${token0}`)
           .send();
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toMatchObject(originalItem);
+        expect(res.body).toMatchObject(race);
       });
 
-      it('should send 200 to admin user and return item', async () => {
+      it('should send 200 to admin user and return race', async () => {
         const res = await request(server)
-          .get(`/items/${originalItem._id}`)
+          .get(`/races/${originalRace._id}`)
           .set('Authorization', `Bearer ${adminToken}`)
           .send();
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toMatchObject(originalItem);
+        expect(res.body).toMatchObject(race);
       });
     });
 
     describe('GET /', () => {
-      let items;
       beforeEach(async () => {
-        items = (await models.Item.insertMany([item0, item1])).map((i) =>
-          i.toJSON(),
-        );
-        items.forEach((i) => {
-          i._id = i._id.toString();
-        });
+        await request(server)
+          .post('/races')
+          .set('Authorization', `Bearer ${adminToken}`)
+          .send(race0);
+        await request(server)
+          .post('/races')
+          .set('Authorization', `Bearer ${adminToken}`)
+          .send(race1);
       });
 
-      it('should send 200 to normal user and return all items', async () => {
+      it('should send 200 to normal user and return all races', async () => {
         const res = await request(server)
-          .get('/items/')
+          .get('/races')
           .set('Authorization', `Bearer ${token0}`)
           .send();
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toMatchObject(items);
+        expect(res.body).toMatchObject([race0, race1]);
       });
 
-      it('should send 200 to admin user and return all items', async () => {
+      it('should send 200 to admin user and return all races', async () => {
         const res = await request(server)
-          .get('/items/')
+          .get('/races')
           .set('Authorization', `Bearer ${adminToken}`)
           .send();
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toMatchObject(items);
+        expect(res.body).toMatchObject([race0, race1]);
       });
     });
   });
