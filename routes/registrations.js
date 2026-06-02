@@ -69,7 +69,7 @@ router.delete('/:id', isAuthorized, async (req, res, next) => {
       res.sendStatus(403);
       return;
     }
-    await registrationDao.deleteRegistration(req.user._id)
+    await registrationDao.deleteRegistration(req.params.id)
     res.sendStatus(200);
   } catch (e) {
     next (e);
