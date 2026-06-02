@@ -28,6 +28,11 @@ export const getRaceWithRunners = async (id) => {
         foreignField: '_id', //match against Runner _id
         as: 'runners', //name of the new array added to the result
       }
+    },
+    {
+      $project: {
+        'runners.password': 0
+      }
     }
   ])
   return races[0] ?? null
