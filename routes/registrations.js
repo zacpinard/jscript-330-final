@@ -40,7 +40,7 @@ router.get('/', isAuthorized, async (req, res, next) => {
 // Runner can only see their own, admin can see any
 router.get('/:id', isAuthorized, async (req, res, next) => {
   try {
-    const registration = await registrationDao.getRegistrationByIdPopulated(req.params.id);
+    const registration = await registrationDao.getRegistrationById(req.params.id);
     if (!registration) {
       res.sendStatus(404);
       return;
