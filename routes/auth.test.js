@@ -15,10 +15,14 @@ describe('/auth', () => {
   const user0 = {
     email: 'user0@mail.com',
     password: '123password',
+    firstName: 'John',
+    lastName: 'Smith',
   };
   const user1 = {
     email: 'user1@mail.com',
     password: '456password',
+    firstName: 'Jane',
+    lastName: 'Doe',
   };
 
   describe('before signup', () => {
@@ -49,6 +53,8 @@ describe('/auth', () => {
       it('should return 400 without a password', async () => {
         const res = await request(server).post('/auth/signup').send({
           email: user0.email,
+          firstName: user0.firstName,
+          lastName: user0.lastName,
         });
         expect(res.statusCode).toEqual(400);
       });
@@ -56,12 +62,14 @@ describe('/auth', () => {
       it('should return 400 with empty password', async () => {
         const res = await request(server).post('/auth/signup').send({
           email: user1.email,
+          firstName: user1.firstName,
+          lastName: user1.lastName,
           password: '',
         });
         expect(res.statusCode).toEqual(400);
       });
 
-      it('should return 200 and with a password', async () => {
+      it('should return 200 with a password', async () => {
         const res = await request(server).post('/auth/signup').send(user1);
         expect(res.statusCode).toEqual(200);
       });
@@ -75,9 +83,9 @@ describe('/auth', () => {
 
       it('should not store raw password', async () => {
         await request(server).post('/auth/signup').send(user0);
-        const users = await models.User.find().lean();
-        users.forEach((user) => {
-          expect(Object.values(user)).not.toContain(user0.password);
+        const runners = await models.Runner.find().lean();
+        runners.forEach((runner) => {
+          expect(Object.values(runner)).not.toContain(user0.password);
         });
       });
     });
@@ -111,16 +119,16 @@ describe('/auth', () => {
         expect(typeof res.body.token).toEqual('string');
       });
 
-      it('should not store token on user', async () => {
+      it('should not store token on runner', async () => {
         const res = await request(server).post('/auth/login').send(user);
         const { token } = res.body;
-        const users = await models.User.find().lean();
-        users.forEach((user) => {
-          expect(Object.values(user)).not.toContain(token);
+        const runners = await models.Runner.find().lean();
+        runners.forEach((runner) => {
+          expect(Object.values(runner)).not.toContain(token);
         });
       });
 
-      it('should return a JWT with user email, _id, and roles inside, but not password', async () => {
+      it('should return a JWT with email, _id, and roles but not password', async () => {
         const res = await request(server).post('/auth/login').send(user);
         const { token } = res.body;
         const decodedToken = jwt.decode(token);
@@ -128,7 +136,7 @@ describe('/auth', () => {
         expect(decodedToken.roles).toEqual(['user']);
         expect(decodedToken._id).toMatch(
           /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i,
-        ); // mongo _id regex
+        );
         expect(decodedToken.password).toBeUndefined();
       });
     });

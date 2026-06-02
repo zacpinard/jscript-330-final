@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-import Item from './models/runner';
-import Order from './models/order';
-import User from './models/runner';
+import Runner from './models/runner';
+import Race from './models/race';
+import Registration from './models/registration';
 
-const models = [Item, Order, User];
+const models = [Runner, Race, Registration];
 
 export const connectDB = async () => {
   await mongoose.connect(process.env.MONGO_URL, {});
