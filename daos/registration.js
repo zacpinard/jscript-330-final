@@ -3,7 +3,7 @@ import Registration from '../models/registration';
 export const createRegistration = async ({ runnerId, raceId }) =>
   Registration.create({ runnerId, raceId });
 
-export const getRegistrationByRunnerId = async (runnerId) =>
+export const getRegistrationsByRunnerId = async (runnerId) =>
   Registration.find({runnerId}).lean()
 
 export const getRegistrationById = async (id) =>
