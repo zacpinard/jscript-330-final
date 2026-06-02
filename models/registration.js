@@ -7,7 +7,7 @@ const registrationSchema = new mongoose.Schema({
     required: true,
   },
   raceId: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item' }],
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Race',
     required: true,
   },
