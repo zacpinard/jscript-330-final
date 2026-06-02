@@ -15,7 +15,7 @@ router.post('/signup', async (req, res, next) => {
       return;
     }
     try {
-      await runnerDao.createRunner({ email, password });
+      await runnerDao.createRunner({ email, password, firstName, lastName, nationality, age });
       res.sendStatus(200);
     } catch (e) {
       if (e.code === 11000) {

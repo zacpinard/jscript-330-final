@@ -3,7 +3,7 @@ import Runner from '../models/runner';
 
 export const createRunner = async ({ email, password }) => {
   const hashed = await bcrypt.hash(password, 10);
-  return Runner.create({ email, password: hashed, roles: ['user'] });
+  return Runner.create({ email, password: hashed, roles: ['user'], firstName, lastName, nationality, age });
 };
 
 export const getByEmail = async (email) => Runner.findOne({ email }).lean();
